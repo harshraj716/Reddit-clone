@@ -104,6 +104,7 @@ const PostForm = ({ user }) => {
         await updateDoc(postDocRef, {
           imageURL: downloadURL,
         });
+
       }
 
       setPostItems((prev) => ({

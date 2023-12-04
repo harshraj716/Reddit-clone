@@ -22,4 +22,4 @@ const useChangeImage = () => {
   }
 }
 
-export default useChangeImage
+export default useChangeImage;

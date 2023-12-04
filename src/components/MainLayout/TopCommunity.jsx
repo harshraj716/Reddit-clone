@@ -39,8 +39,6 @@ const TopCommunity = () => {
         ...doc.data(),
       }));
       setCommunities(communities);
-      // Log communities to the console for debugging
-      console.log("Communities:", communities);
     } catch (error) {
       console.error("Error fetching communities:", error);
     } finally {
@@ -144,7 +142,7 @@ const TopCommunity = () => {
                   </Link>
                 ))
               : // Show a limited number of communities
-                communities.slice(0, 5).map((item, index) => (
+                communities.slice(0, 3).map((item, index) => (
                   <Link key={item.id} to={`/r/${item.id}`}>
                     <Flex
                       position="relative"
