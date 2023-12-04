@@ -169,42 +169,51 @@ const usePostsHook = () => {
   };
   
 
-  const deletePost = async (postToDelete) => {
+  const deletePost = async (post) => {
     try {
       // Check if the post has an image and delete it
-      if (postToDelete.imageURL) {
-        const imageRef = ref(
-          appStorage,
-          `posts/${postToDelete.id}/image`
-        );
+      if (post.imageURL) {
+        const imageRef = ref(appStorage, `posts/${post.id}/image`);
         await deleteObject(imageRef);
       }
-
+  
       // Delete the post in Firestore
-      const postDeleteRef = doc(firestore, "posts", postToDelete.id);
+      const postDeleteRef = doc(firestore, "posts", post.id);
       await deleteDoc(postDeleteRef);
-
+  
       // Update the state to remove the deleted post
       setPostStateValue((prev) => ({
         ...prev,
-        posts: prev.posts.filter((post) => post.id !== postToDelete.id),
+        posts: prev.posts.filter((p) => p.id !== post.id),
+        postsCache: {
+          ...prev.postsCache,
+          [post.communityId]: prev.postsCache[post.communityId]?.filter(
+            (item) => item.id !== post.id
+          ),
+        },
       }));
-     
+  
       // Remove the deleted post from local storage
-      saveVotesToLocalStorage(
-        postStateValue.postVotes.filter((vote) => vote.postId !== postToDelete.id)
+      const updatedVotes = postStateValue.postVotes.filter(
+        (vote) => vote.postId !== post.id
       );
-
-      console.log(postStateValue)
-
+      setPostStateValue((prev) => ({
+        ...prev,
+        postVotes: updatedVotes,
+      }));
+  
+      // Save updated votes to local storage
+      saveVotesToLocalStorage(updatedVotes);
+  
+      console.log(postStateValue);
+  
       return true;
     } catch (error) {
       console.error("Error deleting post:", error);
       return false;
     }
   };
-
-
+  
   return {
     postStateValue,
     setPostStateValue,

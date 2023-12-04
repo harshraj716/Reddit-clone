@@ -1,18 +1,11 @@
-// GetPosts.js
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { auth, firestore } from "../../Firebase/firebaseConfig";
 import usePostsHook from "../../CustomHooks/usePostsHook";
 import GetPostsData from "./GetPostsData";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Stack,Icon, Flex } from "@chakra-ui/react";
 import PostLoader from "./PostLoader";
-import {
-  Paginator,
-  Previous,
-  PageGroup,
-  Next,
-} from "chakra-paginator";
+import { Flex, Button, Stack } from "@chakra-ui/react";
 import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
 
 const GetPosts = ({ communityData }) => {
@@ -66,15 +59,17 @@ const GetPosts = ({ communityData }) => {
   }, [communityData.id, currentPage]);
 
   const handlePageChange = (newPage) => {
+    if (newPage === currentPage) {
+      // If the clicked page is the current page, do nothing
+      return;
+    }
     setCurrentPage(newPage);
   };
 
-  // Ensure allPosts is an empty array if undefined
-  const paginatedPosts =
-    postStateValue.allPosts?.slice(
-      (currentPage - 1) * postsPerPage,
-      currentPage * postsPerPage
-    ) || [];
+  // Calculate which posts to display on the current page
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const paginatedPosts = postStateValue.allPosts?.slice(startIndex, endIndex) || [];
 
   return (
     <>
@@ -98,47 +93,36 @@ const GetPosts = ({ communityData }) => {
           ))}
         </Stack>
       )}
-      <Flex justify='center' mt={4} align="center">
-        <Paginator
-          activeStyles={{
-            bg: "blue.500",
-            color: "white",
-            borderRadius: "md",
-            width: "2.5rem",
-          }}
-          normalStyles={{
-            bg: "white",
-            color: "gray.500",
-            borderRadius: "md",
-            margin: "0.25rem",
-            width: "2.5rem",
-          }}
-          activePageStyles={{
-            bg: "red.500",
-            color: "white",
-            borderRadius: "md",
-          }}
-          innerLimit={4}
-          outerLimit={4}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-          pagesQuantity={Math.ceil(
-            (postStateValue.allPosts?.length || 0) / postsPerPage
-          )}
-          containerStyles={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+      <Flex justify="center" mt={4} align="center">
+        <Button
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+          mr={2}
+          bg="blue.800"
         >
-          <Previous mr={2}>
-            <Icon  as={IoArrowBackOutline} boxSize={6} bg='none'/>
-          </Previous>
-          <PageGroup isInline align="center" justify="center" />
-          <Next  ml={2}>
-            <Icon as={IoArrowForwardOutline} boxSize={6} />
-          </Next>
-        </Paginator>
+          <IoArrowBackOutline />
+        </Button>
+        {Array.from({ length: Math.ceil(postStateValue.allPosts?.length / postsPerPage) }, (_, index) => (
+          <Button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            variant={currentPage === index + 1 ? "solid" : "outline"}
+            mr={2}
+            borderRadius={5}
+       
+          >
+            {index + 1}
+          </Button>
+        ))}
+        <Button
+          disabled={currentPage === Math.ceil(postStateValue.allPosts?.length / postsPerPage)}
+          onClick={() => handlePageChange(currentPage + 1)}
+          ml={2}
+          borderRadius='50%'
+          bg="blue.800"
+        >
+          <IoArrowForwardOutline />
+        </Button>
       </Flex>
     </>
   );

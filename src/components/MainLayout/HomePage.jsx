@@ -5,12 +5,10 @@ import { auth, firestore } from "../../Firebase/firebaseConfig";
 import { collection, orderBy, query, limit, getDocs } from "firebase/firestore";
 import usePostsHook from "../../CustomHooks/usePostsHook";
 import PostLoader from "../Post/PostLoader";
-import { Stack,Icon,Flex } from "@chakra-ui/react";
+import { Stack, Icon, Flex,Button } from "@chakra-ui/react"; // You can remove Chakra UI imports if not needed
 import GetPostsData from "../Post/GetPostsData";
 import CreatePostLink from "../../Pages/CommunityPage/CreatePostLink";
 import TopCommunity from "./TopCommunity";
-import { Paginator, Previous, PageGroup, Next } from "chakra-paginator";
-import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
 import HomeCreatePostButton from "./HomeCreatePostButton";
 
 const HomePage = () => {
@@ -31,21 +29,27 @@ const HomePage = () => {
   const UserHomeFeed = async () => {
     setLoading(true);
     try {
+      const startIndex = (currentPage - 1) * postsPerPage;
+      const endIndex = startIndex + postsPerPage;
+  
       const postget = query(
         collection(firestore, "posts"),
         orderBy("voteStatus", "desc"),
-        limit(postsPerPage)
+        limit(endIndex)
       );
-
+  
       const postDocuments = await getDocs(postget);
-      const posts = postDocuments.docs.map((doc) => ({
+      const allPosts = postDocuments.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
+  
+      const paginatedPosts = allPosts.slice(startIndex, endIndex);
+  
       setPostStateValue((prev) => ({
         ...prev,
-        posts: posts,
+        allPosts: allPosts,
+        posts: paginatedPosts,
       }));
     } catch (error) {
       console.error(error);
@@ -53,13 +57,42 @@ const HomePage = () => {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     UserHomeFeed();
   }, [user, loadingUser, currentPage]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const totalPages = Math.ceil(
+      (postStateValue.allPosts?.length || 0) / postsPerPage
+    );
+    const pageNumbers = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          style={{
+            margin: "0.25rem",
+            padding: "0.5rem",
+            width: '40px',
+            backgroundColor: currentPage === i ? "blue" : "white",
+            color: currentPage === i ? "white" : "gray",
+            borderRadius: "0.25rem",
+            cursor: "pointer",
+          }}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pageNumbers;
   };
 
   return (
@@ -88,55 +121,17 @@ const HomePage = () => {
                   />
                 ))}
             </Stack>
-            <Flex justify='center' mt={4}>
-            <Paginator
-              activeStyles={{
-                bg: "blue.500",
-                color: "white",
-                borderRadius: "md",
-                width: "2.5rem",
-              }}
-              normalStyles={{
-                bg: "white",
-                color: "gray.500",
-                borderRadius: "md",
-                margin: "0.25rem",
-                width: "2.5rem",
-              }}
-              activePageStyles={{
-                bg: "red.500",
-                color: "white",
-                borderRadius: "md",
-              }}
-              innerLimit={4}
-              outerLimit={4}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-              pagesQuantity={Math.ceil(
-                (postStateValue.allPosts?.length || 0) / postsPerPage
-              )}
-              containerStyles={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-            >
-              <Previous mr={2} mt={1}>
-                <Icon as={IoArrowBackOutline} boxSize={6} bg="none" />
-              </Previous>
-              <PageGroup isInline align="center" justify="center" />
-              <Next  mt={1} ml={2}>
-                <Icon as={IoArrowForwardOutline} boxSize={6} />
-              </Next>
-            </Paginator>
+            <Flex justify="center" mt={5}>
+              <Button mt={1} mr={1} onClick={() => handlePageChange(currentPage - 1)}>&lt;</Button>
+              {renderPageNumbers()}
+              <Button mt={1} ml={1} onClick={() => handlePageChange(currentPage + 1)}>&gt;</Button>
             </Flex>
           </>
         )}
       </>
       <>
         <TopCommunity />
-        <HomeCreatePostButton/>
+        <HomeCreatePostButton />
       </>
     </HomePageLayout>
   );

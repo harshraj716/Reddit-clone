@@ -41,6 +41,7 @@ const defaultPostState ={
   selectedPost: null,
   posts: [],
   postVotes: [],
+  postsCache: {},
 }
 
 export const poststate= atom({
