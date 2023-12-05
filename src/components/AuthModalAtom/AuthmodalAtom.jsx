@@ -13,7 +13,6 @@ export const authModalState = atom({
 
 export const defaultCommunityState = {
   mySnippets: [],
-  initSnippetsFetched: false,
   currentCommunity: [],
 };
 
@@ -27,7 +26,7 @@ const defaultPostState ={
   selectedPost: null,
   posts: [],
   postVotes: [],
-  postsCache: {},
+
 }
 
 export const poststate= atom({

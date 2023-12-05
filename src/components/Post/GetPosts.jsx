@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { auth, firestore } from "../../Firebase/firebaseConfig";
 import usePostsHook from "../../CustomHooks/usePostsHook";
 import GetPostsData from "./GetPostsData";
@@ -31,31 +31,34 @@ const GetPosts = ({ communityData }) => {
           where("communityId", "==", communityData.id),
           orderBy("createdAt", "desc")
         );
-
-        const getPostsResult = await getDocs(postQuery);
-        const posts = getPostsResult.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setPostStateValue((prev) => ({
-          ...prev,
-          allPosts: posts,
-        }));
-
-        setCurrentPage((prev) =>
-          Math.min(prev, Math.ceil(posts.length / postsPerPage))
-        );
+  
+        const unsubscribe = onSnapshot(postQuery, (snapshot) => {
+          const posts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+  
+          setPostStateValue((prev) => ({
+            ...prev,
+            allPosts: posts,
+          }));
+  
+          setCurrentPage((prev) =>
+            Math.min(prev, Math.ceil(posts.length / postsPerPage))
+          );
+          setLoading(false);
+        });
+  
+        return () => unsubscribe(); 
       } catch (error) {
         console.error("Error getting posts", error);
-        setLoading(false); // Set loading to false in case of an error
-      } finally {
-        setLoading(false); // Set loading to false once the posts are loaded
+        setLoading(false);
       }
     };
-
+  
     fetchPosts();
   }, [communityData.id, currentPage]);
+  
 
   const handlePageChange = (newPage) => {
     if (newPage === currentPage) {

@@ -13,7 +13,9 @@ import { doc, getDoc } from "firebase/firestore";
 const SinglePostPage = () => {
   const navigate = useNavigate();
   const [user] = useAuthState(auth);
-  const { postStateValue, setPostStateValue, getVotes, deletePost,getSelectPost } = usePostsHook();
+  const { postStateValue, setPostStateValue, getVotes, deletePost,getSelectPost } = usePostsHook();     
+
+
 
   const {postId} = useParams()
    const fetchSinglePost = async(postId) =>{
@@ -59,7 +61,6 @@ const SinglePostPage = () => {
     </>
     <>
 
-{/* {   communityData && ( <AboutCommunity communityData={communityData}/>)} */}
     </>
    </HomePageLayout>
   );

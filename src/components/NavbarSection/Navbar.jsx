@@ -21,31 +21,32 @@ const Navbar = () => {
       borderColor="gray.300"
       height="70px"
       padding="6px 12px"
-      justifyContent={{md: 'space-between'}}
-
+      justifyContent={{ md: "space-between" }}
     >
-      <Link to='/'>
-      <Flex align="center" width={{base: '50px',md:'auto',}}>
-        <Image src={redditlogo} height="30px"  />
-        <Image
-          src={redditText}
-          height="45px"
-          display={{ base: "none", md: "unset" }}
-        />
-      </Flex>
+      <Link to="/">
+        <Flex align="center" width={{ base: "50px", md: "auto" }}>
+          <Image src={redditlogo} height="30px" margin="12px" marginMd="25px" />
+          <Image
+            src={redditText}
+            height="45px"
+            mt={1}
+            display={{ base: "none", md: "unset" }}
+            ml={-2}
+          />
+        </Flex>
       </Link>
 
-      <NavCommunity/>
+      <NavCommunity />
       {/* {left_content_nav} */}
       <Flex flexGrow={1} mr={2} align="center" justify="center">
-        <InputGroup justifyContent='center' width='90%' >
+        <InputGroup justifyContent="center" width="90%">
           <InputLeftElement
             justifyContent="center"
             alignItems="center"
             align="center"
             pointerEvents="none"
           >
-            <SearchIcon justifyContent='center'   color="gray.400" mb={1} />
+            <SearchIcon justifyContent="center" color="gray.400" mb={1} />
           </InputLeftElement>
           <Input
             placeholder="Search Reddit"

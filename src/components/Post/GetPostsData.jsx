@@ -77,6 +77,7 @@ const GetPostsData = ({
       _hover={{ borderColor: SinglePostPage ? "none" : "gray.500" }}
       cursor={SinglePostPage ? "unset" : "pointer"}
       onClick={() => getSelectPost(post)}
+     
     >
       <Flex
         direction="column"
@@ -113,7 +114,7 @@ const GetPostsData = ({
             <AlertTitle>Error Deleting Post!</AlertTitle>
           </Alert>
         )}
-        <Stack p="10px" spacing={2}>
+        <Stack  p="10px" spacing={2}>
           {/* Post information */}
           {post.userDisplayText && (
             <Stack direction="row" spacing={1} align="center">
@@ -122,6 +123,7 @@ const GetPostsData = ({
               </Text>
 
               <ChakraLink
+              direction={{base:'column', md:'row'}} 
                 as="a"
                 onClick={(event) => {
                   event.preventDefault();
@@ -187,12 +189,16 @@ const GetPostsData = ({
               borderRadius={4}
               _hover={{ bg: "gray.200" }}
               cursor="pointer "
+            
             >
-              <Icon as={IoChatboxOutline} mr={2} fontSize={24} />
-              <Text fontSize="10pt" mt={-1}>
+              
+              <Icon  as={IoChatboxOutline} mr={2} fontSize={24} />
+              <Text fontSize="10pt" mr={1}>
                 {post.numberOfComments}
-                <span> Comments</span>
+                
               </Text>
+              <Text   display={{ base: "none", md: "flex" }} fontSize="10pt"> Comments </Text>
+             
             </Flex>
           </Link>
           {/* Share icon */}
@@ -204,10 +210,7 @@ const GetPostsData = ({
             cursor="pointer "
           >
             <Icon as={PiShareFatBold} mr={2} fontSize={24} />
-            <Text fontSize="10pt" mt={-1}>
-              {" "}
-              Share
-            </Text>
+            <Text   display={{ base: "none", md: "flex" }} fontSize="10pt"> Share </Text>
           </Flex>
           {/* Save icon */}
           <Flex
@@ -218,9 +221,7 @@ const GetPostsData = ({
             cursor="pointer "
           >
             <Icon as={IoBookmarkOutline} mr={2} fontSize={24} />
-            <Text fontSize="10pt" mt={-1}>
-              Save
-            </Text>
+            <Text   display={{ base: "none", md: "flex" }} fontSize="10pt"> Save </Text>
           </Flex>
           {/* Delete icon (visible only to post creator) */}
           {userIsCreator && (
@@ -242,9 +243,7 @@ const GetPostsData = ({
               ) : (
                 <>
                   <Icon as={MdOutlineDelete} mr={2} fontSize={24} />
-                  <Text fontSize="10pt" mt={-1}>
-                    Delete
-                  </Text>
+                  <Text   display={{ base: "none", md: "flex" }} fontSize="10pt"> Delete </Text>
                 </>
               )}
             </Flex>
