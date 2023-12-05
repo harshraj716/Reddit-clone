@@ -23,7 +23,6 @@ const useCommunityData = (communityId) => {
               })
             );
             setCommunityData(parsedCommunityData);
-            console.log(parsedCommunityData)
            
           } else {
             console.error("Community document does not exist for ID:", communityId);

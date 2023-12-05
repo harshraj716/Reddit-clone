@@ -11,7 +11,6 @@ import { IoArrowBackOutline, IoArrowForwardOutline } from "react-icons/io5";
 const GetPosts = ({ communityData }) => {
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const {
     postStateValue,
     setPostStateValue,
@@ -23,53 +22,52 @@ const GetPosts = ({ communityData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 5;
 
-  const getPosts = async () => {
-    try {
-      setLoading(true);
-      const postQuery = query(
-        collection(firestore, "posts"),
-        where("communityId", "==", communityData.id),
-        orderBy("createdAt", "desc")
-      );
-
-      const getPostsResult = await getDocs(postQuery);
-      const posts = getPostsResult.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPostStateValue((prev) => ({
-        ...prev,
-        allPosts: posts,
-      }));
-
-      setCurrentPage((prev) =>
-        Math.min(prev, Math.ceil(posts.length / postsPerPage))
-      );
-    } catch (error) {
-      console.error("Error getting posts", error);
-      setError("Error getting posts");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getPosts();
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const postQuery = query(
+          collection(firestore, "posts"),
+          where("communityId", "==", communityData.id),
+          orderBy("createdAt", "desc")
+        );
+
+        const getPostsResult = await getDocs(postQuery);
+        const posts = getPostsResult.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPostStateValue((prev) => ({
+          ...prev,
+          allPosts: posts,
+        }));
+
+        setCurrentPage((prev) =>
+          Math.min(prev, Math.ceil(posts.length / postsPerPage))
+        );
+      } catch (error) {
+        console.error("Error getting posts", error);
+        setLoading(false); // Set loading to false in case of an error
+      } finally {
+        setLoading(false); // Set loading to false once the posts are loaded
+      }
+    };
+
+    fetchPosts();
   }, [communityData.id, currentPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage === currentPage) {
-      // If the clicked page is the current page, do nothing
       return;
     }
     setCurrentPage(newPage);
   };
 
-  // Calculate which posts to display on the current page
   const startIndex = (currentPage - 1) * postsPerPage;
   const endIndex = startIndex + postsPerPage;
-  const paginatedPosts = postStateValue.allPosts?.slice(startIndex, endIndex) || [];
+  const paginatedPosts =
+    postStateValue.allPosts?.slice(startIndex, endIndex) || [];
 
   return (
     <>
@@ -102,23 +100,28 @@ const GetPosts = ({ communityData }) => {
         >
           <IoArrowBackOutline />
         </Button>
-        {Array.from({ length: Math.ceil(postStateValue.allPosts?.length / postsPerPage) }, (_, index) => (
-          <Button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            variant={currentPage === index + 1 ? "solid" : "outline"}
-            mr={2}
-            borderRadius={5}
-       
-          >
-            {index + 1}
-          </Button>
-        ))}
+        {Array.from(
+          { length: Math.ceil(postStateValue.allPosts?.length / postsPerPage) },
+          (_, index) => (
+            <Button
+              key={index}
+              onClick={() => handlePageChange(index + 1)}
+              variant={currentPage === index + 1 ? "solid" : "outline"}
+              mr={2}
+              borderRadius={5}
+            >
+              {index + 1}
+            </Button>
+          )
+        )}
         <Button
-          disabled={currentPage === Math.ceil(postStateValue.allPosts?.length / postsPerPage)}
+          disabled={
+            currentPage ===
+            Math.ceil(postStateValue.allPosts?.length / postsPerPage)
+          }
           onClick={() => handlePageChange(currentPage + 1)}
           ml={2}
-          borderRadius='50%'
+          borderRadius="50%"
           bg="blue.800"
         >
           <IoArrowForwardOutline />

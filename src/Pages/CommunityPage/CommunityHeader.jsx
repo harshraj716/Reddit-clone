@@ -1,28 +1,40 @@
 import React from "react";
-import { Flex, Box, Image, Text, Button } from "@chakra-ui/react";
+import { Flex, Box, Image, Text, Button,Icon } from "@chakra-ui/react";
+import { FaReddit } from "react-icons/fa";
 import useCommunityHook from "../../CustomHooks/useCommunityHook";
 
 
-const CommunityHeader = ({ communityData ,communityStateValue}) => {
+const CommunityHeader = ({ communityData }) => {
 
 
-  const { communityState, joinOrLeaveCommunity, loading } = useCommunityHook();
-  const isJoin = communityState.mySnippets.find(item => item.communityId === communityData.id);
+  const { communityStateValue, joinOrLeaveCommunity, loading } = useCommunityHook();
+  const isJoin = communityStateValue.mySnippets.find((item) => item.communityId === communityData.id);
   
   return (
     <Flex direction="column" width="100%" height="150px">
       <Box height="50%" bg="blue.400" />
       <Flex justify="center" bg="white" flexGrow={1}>
         <Flex width="90%" maxW="900px">
-          <Image
+         { communityStateValue.currentCommunity?.imageURL ? (<Image
             src={communityStateValue.currentCommunity?.imageURL}
             height="80px"
             borderRadius="50%"
             border="5px solid white"
             position="relative"
             top={-3}
-          />
+          />):(
+            <Icon
+             as={FaReddit}
+             fontSize={64}
+             position="relative"
+             top={-3}
+             color='blue.500'
+             border='4px solid white'
+             borderRadius='full'
 
+            />
+          )
+}
           <Flex padding="10px 14px">
             <Flex direction="column" mr={6}>
               <Text fontWeight={800} fontSize="15pt">

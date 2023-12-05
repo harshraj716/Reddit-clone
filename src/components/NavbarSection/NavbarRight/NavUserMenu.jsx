@@ -18,19 +18,22 @@ import { signOut } from "firebase/auth";
 import { MdOutlineLogin } from "react-icons/md";
 import { auth } from "../../../Firebase/firebaseConfig";
 import showToast from "../../../CharkaUI/toastUtils";
-import { useSetRecoilState } from "recoil";
-import { authModalState } from "../../AuthModalAtom/AuthmodalAtom";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
+import { authModalState, communityState } from "../../AuthModalAtom/AuthmodalAtom";
 import { IoSparkles } from "react-icons/io5";
 
 const NavUserMenu = ({ user }) => {
   const toast = useToast();
+  const resetCommunityData = useResetRecoilState(communityState);
   const setAuthModalState = useSetRecoilState(authModalState);
+
 
   const handleLogout = () => {
     if (user) {
       signOut(auth)
         .then(() => {
           showToast(toast, "Logged out successfully", "", "success");
+          resetCommunityData();
         })
         .catch((error) => {
           showToast(toast, "Error logging out", error.message, "error");

@@ -9,36 +9,32 @@ import CreatePostLink from "./CreatePostLink";
 import GetPosts from "../../components/Post/GetPosts";
 import { Spinner, Flex } from "@chakra-ui/react";
 import AboutCommunity from "./AboutCommunity";
+import { useSetRecoilState } from "recoil";
+import { communityState } from "../../components/AuthModalAtom/AuthmodalAtom";
+
 
 const CommunityId = () => {
   const { communityId } = useParams();
   const [loading, setLoading] = useState(true);
   const {communityData} = useCommunityData(communityId);
-  const [communityStateValue, setCommunityStateValue] = useState({
-    currentCommunity: null,
-  });
+  const setCommunityStateValue = useSetRecoilState(communityState);
 
 
 
-  
-
-  console.log(communityStateValue)
   useEffect(() => {
     if (communityData) {
       setLoading(false);
-    }
-  }, [communityData]);
-
-  useEffect(() => {
-    if (communityData) {
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: communityData,
       }));
     }
   }, [communityData]);
+
+
+
   
-  
+
 
   return (
     <>
@@ -54,14 +50,14 @@ const CommunityId = () => {
         </Flex>
       ) : communityData ? (
         <>
-          <CommunityHeader communityData={communityData}  communityStateValue={communityStateValue}/>
+          <CommunityHeader communityData={communityData}  />
           <HomePageLayout>
             <>
               <CreatePostLink communityData={communityData} />
               <GetPosts communityData={communityData} />
             </>
             <>
-             <AboutCommunity comunityData={communityData} setCommunityStateValue={setCommunityStateValue}/>
+             <AboutCommunity comunityData={communityData} />
             </>
           </HomePageLayout>
         </>
@@ -73,3 +69,6 @@ const CommunityId = () => {
 };
 
 export default CommunityId;
+
+
+ 

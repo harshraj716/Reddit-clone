@@ -4,9 +4,13 @@ import { Box ,Text} from '@chakra-ui/react';
 import PostForm from '../../components/Post/PostForm/PostForm';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {auth} from '../../Firebase/firebaseConfig'
+import { useRecoilValue } from 'recoil';
+import { communityState } from '../../components/AuthModalAtom/AuthmodalAtom';
 
 const Submit = () => {
     const [user] = useAuthState(auth)
+    const communityStateValue = useRecoilValue(communityState);
+    console.log("community vallue", communityStateValue)
   return (
     <HomePageLayout>
         {/* New Create and Post Form */}

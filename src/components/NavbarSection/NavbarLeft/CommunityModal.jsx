@@ -28,10 +28,10 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from '../../../Firebase/firebaseConfig';
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { commentsState } from "../../AuthModalAtom/AuthmodalAtom";
+import { communityState } from "../../AuthModalAtom/AuthmodalAtom";
 
 const CommunityModal = ({ openModal, handleClose }) => {
-  const setSnippetState= useSetRecoilState(commentsState);
+  const setSnippetState= useSetRecoilState(communityState);
   const toast = useToast();
   const [user] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const CommunityModal = ({ openModal, handleClose }) => {
       const communityDocumentsRef = doc(firestore, "community", CommunityName);
 
       await runTransaction(firestore, async (transaction) => {
-        const communityDocuments = await getDoc(communityDocumentsRef);
+        const communityDocuments = await transaction.get(communityDocumentsRef);
         if (communityDocuments.exists()) {
           throw new Error("Sorry, the name is already taken!");
         }

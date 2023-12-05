@@ -4,23 +4,28 @@ import googleImg from "../../images/google.png";
 import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../../Firebase/firebaseConfig";
 import showToast from "../../CharkaUI/toastUtils";
-import { addDoc, collection } from "firebase/firestore";
+import { collection, setDoc,doc } from "firebase/firestore";
 import useCommunityHook from "../../CustomHooks/useCommunityHook";
 
 const GoogleAuthModel = () => {
-  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+  const [signInWithGoogle, user,userCred, loading, error] = useSignInWithGoogle(auth);
   const toast = useToast();
   const { joinOrLeaveCommunity } = useCommunityHook();
+   
   const createUser = async (user) => {
-    const { uid } = user.user;
-    await addDoc(collection(firestore, "users"), { uid });
-  };
-
-  useEffect(() => {
-    if (user) {
-      createUser(user);
+    if (user && user.uid) {
+      const { uid } = user;
+      console.log(uid);
+      const userDocRef = doc(firestore, "users", uid);
+      await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
     }
-  }, [user]);
+  };
+  
+  useEffect(() => {
+    if (userCred) {
+      createUser(userCred.user);
+    }
+  }, [userCred]);
 
   const [authUser] = useAuthState(auth);
 

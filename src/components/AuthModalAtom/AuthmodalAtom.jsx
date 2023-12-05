@@ -11,23 +11,9 @@ export const authModalState = atom({
 });
 
 
-
-
-export const currentCommunityState = atom({
-  key: "currentCommunityState",
-  default: null,
-});
-
-
-export const commentsState = atom({
-  key: 'commentsState',
-  default: [],
-});
-
 export const defaultCommunityState = {
   mySnippets: [],
   initSnippetsFetched: false,
-  visitedCommunities: {},
   currentCommunity: [],
 };
 

@@ -3,13 +3,21 @@ import { Flex, Input, Icon, Image } from '@chakra-ui/react';
 import { IoImageOutline } from 'react-icons/io5';
 import { BsLink45Deg } from 'react-icons/bs';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { authModalState } from '../../components/AuthModalAtom/AuthmodalAtom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../Firebase/firebaseConfig';
 
 
 const CreatePostLink = ({communityData}) => {
     const navigate = useNavigate();
     const { communityId } = useParams();
-
+    const [user] = useAuthState(auth);
+     const setAuthModal = useSetRecoilState(authModalState);
     const onClick = () => {
+      if(!user){
+        setAuthModal({open: true, view: 'login'});
+      }
         if (communityId) {
           navigate(`/r/${communityId}/submit`);
         } else {

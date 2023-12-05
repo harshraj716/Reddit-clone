@@ -150,7 +150,7 @@ const usePostsHook = () => {
       if(postStateValue.selectedPost){
         setPostStateValue((prev) => ({
           ...prev,
-          selectedPost: updatedPosts,
+          selectedPost: updatedPost,
         }))
       }
 
@@ -185,12 +185,6 @@ const usePostsHook = () => {
       setPostStateValue((prev) => ({
         ...prev,
         posts: prev.posts.filter((p) => p.id !== post.id),
-        postsCache: {
-          ...prev.postsCache,
-          [post.communityId]: prev.postsCache[post.communityId]?.filter(
-            (item) => item.id !== post.id
-          ),
-        },
       }));
   
       // Remove the deleted post from local storage

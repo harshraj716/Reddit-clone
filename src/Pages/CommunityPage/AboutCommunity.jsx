@@ -22,11 +22,14 @@ import { FaReddit } from "react-icons/fa";
 import { useState } from "react";
 import { getDownloadURL, getStorage, uploadString,ref } from "firebase/storage";
 import { updateDoc ,doc} from "firebase/firestore";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { communityState } from "../../components/AuthModalAtom/AuthmodalAtom";
 
-const AboutCommunity = ({ comunityData, setCommunityStateValue }) => {
+const AboutCommunity = ({ comunityData }) => {
   const { communityId } = useParams();
   const [user] = useAuthState(auth);
   const selectedFileRef = useRef();
+  const setCommunityStateValue = useSetRecoilState(communityState);
   const { selectedFile, onChangeImage } = useChangeImage();
   const [uploadingImage, setUploadingImage] = useState(false);
   const handleuploadImage = async () => {
@@ -47,13 +50,13 @@ const AboutCommunity = ({ comunityData, setCommunityStateValue }) => {
         imageURL: downloadURL,
       });
   
-      setCommunityStateValue((prev) => ({
+      setCommunityStateValue((prev) =>({
         ...prev,
-        currentCommunity: {
+         currentCommunity:{
           ...prev.currentCommunity,
-          imageURL: downloadURL,
-        },
-      }));
+          imageURL: downloadURL
+         }
+      }))
   
     } catch (error) {
       console.log("Image uploading error", error);
