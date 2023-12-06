@@ -63,7 +63,7 @@ const GetPostsData = ({
 
       showToast(toast, "Post deleted successfully");
       if(getSelectPost){
-        navigate('/')
+        navigate(`/r/${post.communityId}`);
       }
     } catch (error) {
       setError(error.message);
