@@ -118,10 +118,11 @@ const GetPostsData = ({
           {/* Post information */}
           {post.userDisplayText && (
             <Stack direction="row" spacing={1} align="center">
+               <Flex display={{base: 'coloumn', md:'flex'}}>
               <Text fontWeight={600} fontSize="10pt">
                 r/{post.userDisplayText}
               </Text>
-
+       
               <ChakraLink
               direction={{base:'column', md:'row'}} 
                 as="a"
@@ -133,10 +134,11 @@ const GetPostsData = ({
               >
                 <Text fontSize="9pt">Posted by u/{post.communityId}</Text>
               </ChakraLink>
-
-              <Text color="gray.400" fontSize="9pt">
+              </Flex>
+              <Text ml='10px' mt={[-5, 0]} color="gray.400" fontSize="9pt">
                 {formatTimestamp(post.createdAt)}
               </Text>
+            
             </Stack>
           )}
           <Text color="gray.800" fontSize="12pt" fontWeight={600}>

@@ -21,7 +21,7 @@ const Navbar = () => {
       borderColor="gray.300"
       height="70px"
       padding="6px 12px"
-      justifyContent={{ md: "space-between" }}
+      justifyContent={{base:"space-between", md: "space-between" }}
     >
       <Link to="/">
         <Flex align="center" width={{ base: "50px", md: "auto" }}>
@@ -38,12 +38,13 @@ const Navbar = () => {
 
       <NavCommunity />
       {/* {left_content_nav} */}
-      <Flex flexGrow={1} mr={2} align="center" justify="center">
+      <Flex flexGrow={1} mr={2} mt={3} align="center" display={{base:'none',md:"block"}} justify="center">
         <InputGroup justifyContent="center" width="90%">
           <InputLeftElement
             justifyContent="center"
             alignItems="center"
             align="center"
+           
             pointerEvents="none"
           >
             <SearchIcon justifyContent="center" color="gray.400" mb={1} />
