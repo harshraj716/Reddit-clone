@@ -62,6 +62,9 @@ const GetPostsData = ({
       }
 
       showToast(toast, "Post deleted successfully");
+      if(getSelectPost){
+        navigate('/')
+      }
     } catch (error) {
       setError(error.message);
     }
