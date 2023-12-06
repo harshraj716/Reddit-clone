@@ -170,7 +170,7 @@ const PostForm = ({ user }) => {
             <Flex align="center" mr={2} height="22px">
               <Icon fontSize="22px" as={item.icon} />
             </Flex>
-            <Text fontSize="10pt" fontWeight={700}>
+            <Text display={{base: 'none', md:'block'}} fontSize="10pt" fontWeight={700}>
               {item.title}
             </Text>
           </Flex>

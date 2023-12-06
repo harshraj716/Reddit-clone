@@ -245,7 +245,7 @@ const GetPostsData = ({
               ) : (
                 <>
                   <Icon as={MdOutlineDelete} mr={2} fontSize={24} />
-                  <Text   display={{ base: "none", md: "flex" }} fontSize="10pt"> Delete </Text>
+                  <Text   display={{ base: "none", md: "none", lg:"flex" }} fontSize="10pt"> Delete </Text>
                 </>
               )}
             </Flex>
